@@ -1,25 +1,51 @@
-alert('Olá Jogador, Bem vindo ao jogo do numero secreto');
-let numeroMaximo = 50
-let numeroSecreto = parseInt(Math.random()*numeroMaximo +1);
-console.log(numeroSecreto);
-let chute;
+let numeroSecreto = gerarNumeroAleatorio();
 let tentativas = 1;
 
-do {
-    chute = prompt(`Escolha um numero entre 1 e ${numeroMaximo}`)
+function exibirTextoNaTela(tag, texto){
+    let campo = document.querySelector(tag);
+    campo.innerHTML = texto
+}
 
-    if (numeroSecreto == chute){
-        break;
-    } else {
-        alert('Você errou o numero HAHA')
-        if (numeroSecreto>chute){
-            alert(`O numero secreto é maior que ${chute}`);
+function exibirMensagemInicial(){
+    exibirTextoNaTela(`h1`,`Jogo do número secreto`);
+    exibirTextoNaTela(`p`,`Escolha um número entre 1 e 10`);
+}
+
+exibirMensagemInicial();
+
+function verificarChute(){
+    let chute = document.querySelector(`input`).value
+    
+    if (chute == numeroSecreto){
+        exibirTextoNaTela(`h1`,`Acertou`);
+        let palavraTentativa = tentativas>1?`tentativas` : `tentativa`;
+        let mensagemTentativas = `Você descobriu o número secreto com ${tentativas} ${palavraTentativa}!`;
+        exibirTextoNaTela(`p`,mensagemTentativas);
+        document.getElementById(`reiniciar`).removeAttribute(`disabled`)
+    }else{
+        if (chute>numeroSecreto){
+            exibirTextoNaTela(`p`,`O número secreto é menor`);
         }else {
-            alert(`O numero secreto é menor que ${chute}`);
+            exibirTextoNaTela(`p`,`O número secreto é maior`);
         }
         tentativas++;
+        limparCampo();
     }
-} while (numeroSecreto != chute);
+}
 
-let palavraTentativa = tentativas>1? 'tentativas' : 'tentativa'
-alert(`Parabens, Você descobriu que o numero secreto era: ${numeroSecreto}\nE acertou com ${tentativas} ${palavraTentativa}`)
+function gerarNumeroAleatorio(){
+    return parseInt(Math.random()*10+1);
+}
+
+function limparCampo(){
+    chute = document.querySelector(`input`);
+    chute.value = ``;
+}
+
+function reiniciarJogo(){
+    numeroSecreto = gerarNumeroAleatorio();
+    limparCampo();
+    tentativas = 1;
+    exibirMensagemInicial();
+    document.getElementById(`reiniciar`).setAttribute(`disabled`)
+}
